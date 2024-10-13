@@ -14,12 +14,12 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    console.log('Fetching revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue>`SELECT * FROM revenue`;
 
-    // console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
@@ -215,3 +215,60 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+export async function totalPaidInvoices() {
+  try {
+    const data = await sql`
+      SELECT SUM(amount) AS total FROM invoices WHERE status = 'paid'
+    `;
+
+    return data.rows[0].total;
+
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total paid invoices.');
+  }
+}
+
+export async function totalPendingInvoices() {
+  try {
+    const data = await sql`
+      SELECT SUM(amount) AS total FROM invoices WHERE status = 'pending'
+    `;
+
+    return data.rows[0].total;  
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total pending invoices.');
+  }
+}
+
+export async function totalInvoices () {
+  try {
+    const data = await sql`
+      SELECT COUNT(id) AS total FROM invoices
+    `;
+
+    return data.rows[0].total;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total invoices.');
+  }
+}
+
+export async function numberOfCustomers () {
+  try {
+    const data = await sql`
+      SELECT COUNT(id) AS total FROM customers
+    `;
+
+    return data.rows[0].total;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total customers.');
+  }
+}
+
+
+
+
